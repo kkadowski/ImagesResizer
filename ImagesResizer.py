@@ -162,16 +162,16 @@ class Ui_MainWindow(object):
                 shutil.copy(plik, destination)
                 flaga=True
             except shutil.SameFileError:
-                self.makeMessage("Copying problem", "Source and destination represents the same file.", "Problem")
+                self.makeMessage("Copying problem", "Source and destination represents the same file.", "Problem", 'warn')
                 flaga=False
             except IsADirectoryError:
-                print(f"Destination {destinantion} is a directory.")
+                print(f"Destination {destinantion} is a directory.", 'warn')
                 flaga=False
             except PermissionError:
-                self.makeMessage("Permission problem","Permission denied.", "Problem")
+                self.makeMessage("Permission problem","Permission denied.", "Problem", 'warn')
                 flaga=False
             except:
-                self.makeMessage("Copying problem", "Error occurred while copying files.", "Problem")
+                self.makeMessage("Copying problem", "Error occurred while copying files.", "Problem", 'warn')
                 flaga=False
         if flaga:
             self.resize(destination)
@@ -189,6 +189,7 @@ class Ui_MainWindow(object):
             h = int(img.shape[0] * scale_percent / 100)
             res_img = cv2.resize(img, (w, h), interpolation = cv2.INTER_AREA)
             cv2.imwrite(_img, res_img)
+            self.makeMessage("Resizing complited","Resizing complited.", "Info", 'info')
             
   
         
@@ -204,11 +205,14 @@ class Ui_MainWindow(object):
             self.textEdit.setText(f"File name: {self.fileName} \nFile directory: {self.path} \nHeight: {self.h} \nWidth: {self.w} \nChannels: {self.c}")
             self.listadozmiany.append(self.Full)
         else:
-            self.makeMessage("This is not an image file", "You can select only jpg, jpeg, png and bmp files.", "Problem")
+            self.makeMessage("This is not an image file", "You can select only jpg, jpeg, png and bmp files.", "Problem", 'warn')
 
-    def makeMessage(self, text, info, title):
+    def makeMessage(self, text, info, title, type):
         self.msg = QMessageBox()
-        self.msg.setIcon(QMessageBox.Warning)
+        if type == 'warn':
+            self.msg.setIcon(QMessageBox.Warning)
+        elif type == 'info':
+            self.msg.setIcon(QMessageBox.Information)
 
         self.msg.setText(text)
         self.msg.setInformativeText(info)
