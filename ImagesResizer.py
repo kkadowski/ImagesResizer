@@ -185,10 +185,9 @@ class Ui_MainWindow(object):
         for _image in myfiles:
             _img = dest+_image
             img = cv2.imread(_img, cv2.IMREAD_UNCHANGED)
-            width = int(img.shape[1] * scale_percent / 100)
-            height = int(img.shape[0] * scale_percent / 100)
-            dim = (width, height)
-            res_img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+            w = int(img.shape[1] * scale_percent / 100)
+            h = int(img.shape[0] * scale_percent / 100)
+            res_img = cv2.resize(img, (w, h), interpolation = cv2.INTER_AREA)
             cv2.imwrite(_img, res_img)
             
   
