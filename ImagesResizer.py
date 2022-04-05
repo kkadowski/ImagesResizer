@@ -152,7 +152,8 @@ class Ui_MainWindow(object):
         self.treeView.clicked.connect(self.dodaj)
         self.listView.clicked.connect(self.info)
         self.pushButton.clicked.connect(self.zmien)
-        
+    
+    # f. zmieniająca rozmiar    
     def zmien(self):
         destination = self.path+'/'+time.strftime('%Y_%m_%d_%H_%M_', time.localtime())+self.destdir
         os.mkdir(destination)
