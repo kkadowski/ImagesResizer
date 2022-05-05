@@ -175,7 +175,8 @@ class Ui_MainWindow(object):
         if self.Full.endswith(".jpg") or self.Full.endswith(".jpeg") or self.Full.endswith(".png") or self.Full.endswith(".bmp"):
             im = cv2.imread(self.Full)
             self.h, self.w, self.c = im.shape
-            self.textEdit.setText(f"File name: {self.fileName} \nFile directory: {self.path} \nHeight: {self.h} \nWidth: {self.w} \nChannels: {self.c}")
+            poprzedni = ''.join(self.textEdit.toPlainText())
+            self.textEdit.setText(f"{poprzedni}\n ______________ \n\nFile name: {self.fileName} \nFile directory: {self.path} \nHeight: {self.h} \nWidth: {self.w} \nChannels: {self.c}")
             self.listadozmiany.append(self.Full)
         else:
             self.makeMessage("This is not an image file", "You can select only jpg, jpeg, png and bmp files.", "Problem", 'warn')
