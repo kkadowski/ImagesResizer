@@ -114,11 +114,6 @@ class Ui_MainWindow(object):
         self.pushButton.clicked.connect(self.zmien)
         self.actionZamknij.triggered.connect(self.Zamknij)
     
-    
-    
-       
-    # f. zmieniająca rozmiar    
-    
     def zmien(self):
         destination = self.path+'/'+time.strftime('%Y_%m_%d_%H_%M_', time.localtime())+self.destdir
         os.mkdir(destination)
@@ -142,7 +137,6 @@ class Ui_MainWindow(object):
         if flaga:
             self.resize(destination)
             
-            
     def resize(self, dest):
         scale_percent = self.spinBox.value()
        
@@ -157,8 +151,6 @@ class Ui_MainWindow(object):
             cv2.imwrite(_img, res_img)
             self.makeMessage("Resizing complited","Resizing complited.", "Info", 'info', 'button_info')
             
-  
-        
     def info(self, index):
         indexItem = self.fileModel.index(index.row(), 0, index.parent())
         self.fileName = self.fileModel.fileName(indexItem)
@@ -182,8 +174,7 @@ class Ui_MainWindow(object):
             self.msg.setIcon(QMessageBox.Information)
         elif type =='question':
             self.msg.setIcon(QMessageBox.Question)
-            
-
+    
         self.msg.setText(text)
         self.msg.setInformativeText(info)
         self.msg.setWindowTitle(title)
@@ -199,7 +190,6 @@ class Ui_MainWindow(object):
             sys.exit(app.exec_())
         else:
             pass
-        
     
     def Zamknij(self):
         self.makeMessage("Quit", "Do you want to quit?", "Do you want to quit?", "question", "button_yesno")
@@ -208,7 +198,6 @@ class Ui_MainWindow(object):
         self.listadozmiany.clear()
         self.path = self.dirModel.fileInfo(index).absoluteFilePath()
         self.listView.setRootIndex(self.fileModel.setRootPath(self.path))
-        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
