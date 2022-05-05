@@ -176,7 +176,7 @@ class Ui_MainWindow(object):
             im = cv2.imread(self.Full)
             self.h, self.w, self.c = im.shape
             poprzedni = ''.join(self.textEdit.toPlainText())
-            self.textEdit.setText(f"{poprzedni}\n ______________ \n\nFile name: {self.fileName} \nFile directory: {self.path} \nHeight: {self.h} \nWidth: {self.w} \nChannels: {self.c}")
+            self.textEdit.setText(f"File name: {self.fileName} \nFile directory: {self.path} \nHeight: {self.h} \nWidth: {self.w} \nChannels: {self.c}\n\n {poprzedni}\n        \n\n")
             self.listadozmiany.append(self.Full)
         else:
             self.makeMessage("This is not an image file", "You can select only jpg, jpeg, png and bmp files.", "Problem", 'warn')
