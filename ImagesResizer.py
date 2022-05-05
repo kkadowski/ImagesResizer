@@ -207,8 +207,8 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Size:"))
         self.spinBox.setSuffix(_translate("MainWindow", "%"))
         self.pushButton.setText(_translate("MainWindow", "Resize"))
-        self.menuPlik.setTitle(_translate("MainWindow", "Plik"))
-        self.actionZamknij.setText(_translate("MainWindow", "Zamknij"))
+        self.menuPlik.setTitle(_translate("MainWindow", "File"))
+        self.actionZamknij.setText(_translate("MainWindow", "Close"))
 
 if __name__ == "__main__":
     import sys
