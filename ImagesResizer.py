@@ -1,12 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
-from PyQt5.QtWidgets import QApplication, QFileSystemModel, QDesktopWidget
-from PyQt5.QtWidgets import QTreeView, QWidget, QVBoxLayout, QMenu
+from PyQt5.QtWidgets import QApplication, QFileSystemModel, QDesktopWidget, QTreeView, QWidget, QVBoxLayout, QMenu, QMessageBox
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt, QObject, QModelIndex, QDir
 import pathlib
+import sys
 import os
 import shutil
 import cv2
@@ -21,10 +18,11 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         self.listadozmiany=[]
         self.destdir = 'resized/'
-    
+        self.path = ''
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(804, 501)
         MainWindow.setMinimumSize(QtCore.QSize(650, 480))
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -84,18 +82,8 @@ class Ui_MainWindow(object):
         self.menuPlik = QtWidgets.QMenu(self.menubar)
         self.menuPlik.setObjectName("menuPlik")
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        self.actionOtw_rz_folder = QtWidgets.QAction(MainWindow)
-        self.actionOtw_rz_folder.setObjectName("actionOtw_rz_folder")
         self.actionZamknij = QtWidgets.QAction(MainWindow)
         self.actionZamknij.setObjectName("actionZamknij")
-        self.actionZmie_rozmiar = QtWidgets.QAction(MainWindow)
-        self.actionZmie_rozmiar.setObjectName("actionZmie_rozmiar")
-        self.menuPlik.addAction(self.actionOtw_rz_folder)
-        self.menuPlik.addAction(self.actionZmie_rozmiar)
-        self.menuPlik.addSeparator()
         self.menuPlik.addAction(self.actionZamknij)
         self.menubar.addAction(self.menuPlik.menuAction())
         
@@ -117,15 +105,20 @@ class Ui_MainWindow(object):
         self.fileModel.setFilter(QDir.NoDotAndDotDot | QDir.Files)
         self.listView.setModel(self.fileModel)
         self.listView.setRootIndex(self.fileModel.index(os.getenv("HOME")))
-        
+       
         self.listView.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
 
         self.treeView.clicked.connect(self.dodaj)
         self.listView.clicked.connect(self.info)
         self.pushButton.clicked.connect(self.zmien)
+        self.actionZamknij.triggered.connect(self.Zamknij)
     
+    
+    
+       
     # f. zmieniająca rozmiar    
+    
     def zmien(self):
         destination = self.path+'/'+time.strftime('%Y_%m_%d_%H_%M_', time.localtime())+self.destdir
         os.mkdir(destination)
@@ -135,16 +128,16 @@ class Ui_MainWindow(object):
                 shutil.copy(plik, destination)
                 flaga=True
             except shutil.SameFileError:
-                self.makeMessage("Copying problem", "Source and destination represents the same file.", "Problem", 'warn')
+                self.makeMessage("Copying problem", "Source and destination represents the same file.", "Problem", 'warn', 'button_warn')
                 flaga=False
             except IsADirectoryError:
-                print(f"Destination {destinantion} is a directory.", 'warn')
+                print(f"Destination {destinantion} is a directory.", 'warn', 'button_warn')
                 flaga=False
             except PermissionError:
-                self.makeMessage("Permission problem","Permission denied.", "Problem", 'warn')
+                self.makeMessage("Permission problem","Permission denied.", "Problem", 'warn', 'button_warn')
                 flaga=False
             except:
-                self.makeMessage("Copying problem", "Error occurred while copying files.", "Problem", 'warn')
+                self.makeMessage("Copying problem", "Error occurred while copying files.", "Problem", 'warn', 'button_warn')
                 flaga=False
         if flaga:
             self.resize(destination)
@@ -162,7 +155,7 @@ class Ui_MainWindow(object):
             h = int(img.shape[0] * scale_percent / 100)
             res_img = cv2.resize(img, (w, h), interpolation = cv2.INTER_AREA)
             cv2.imwrite(_img, res_img)
-            self.makeMessage("Resizing complited","Resizing complited.", "Info", 'info')
+            self.makeMessage("Resizing complited","Resizing complited.", "Info", 'info', 'button_info')
             
   
         
@@ -179,20 +172,37 @@ class Ui_MainWindow(object):
             self.textEdit.setText(f"File name: {self.fileName} \nFile directory: {self.path} \nHeight: {self.h} \nWidth: {self.w} \nChannels: {self.c}\n\n {poprzedni}\n        \n\n")
             self.listadozmiany.append(self.Full)
         else:
-            self.makeMessage("This is not an image file", "You can select only jpg, jpeg, png and bmp files.", "Problem", 'warn')
+            self.makeMessage("This is not an image file", "You can select only jpg, jpeg, png and bmp files.", "Problem", 'warn', 'button_warn')
 
-    def makeMessage(self, text, info, title, type):
+    def makeMessage(self, text, info, title, type, typeButton):
         self.msg = QMessageBox()
         if type == 'warn':
             self.msg.setIcon(QMessageBox.Warning)
         elif type == 'info':
             self.msg.setIcon(QMessageBox.Information)
+        elif type =='question':
+            self.msg.setIcon(QMessageBox.Question)
+            
 
         self.msg.setText(text)
         self.msg.setInformativeText(info)
         self.msg.setWindowTitle(title)
-        self.msg.setStandardButtons(QMessageBox.Ok)
+        if typeButton == 'button_warn' or typeButton =='button_info':
+            self.msg.setStandardButtons(QMessageBox.Ok)
+        elif typeButton == 'button_yesno':
+            self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            self.msg.setDefaultButton(QMessageBox.No)
         self.msg.show()
+        
+        retval = self.msg.exec_()
+        if retval == QMessageBox.Yes:
+            sys.exit(app.exec_())
+        else:
+            pass
+        
+    
+    def Zamknij(self):
+        self.makeMessage("Quit", "Do you want to quit?", "Do you want to quit?", "question", "button_yesno")
     
     def dodaj(self, index):
         self.listadozmiany.clear()
@@ -209,10 +219,7 @@ class Ui_MainWindow(object):
         self.spinBox.setSuffix(_translate("MainWindow", "%"))
         self.pushButton.setText(_translate("MainWindow", "Resize"))
         self.menuPlik.setTitle(_translate("MainWindow", "Plik"))
-        self.actionOtw_rz_folder.setText(_translate("MainWindow", "Otwórz folder"))
         self.actionZamknij.setText(_translate("MainWindow", "Zamknij"))
-        self.actionZmie_rozmiar.setText(_translate("MainWindow", "Zmień rozmiar"))
-
 
 if __name__ == "__main__":
     import sys
