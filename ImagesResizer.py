@@ -107,8 +107,6 @@ class Ui_MainWindow(object):
         self.listView.setRootIndex(self.fileModel.index(os.getenv("HOME")))
        
         self.listView.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-
-
         self.treeView.clicked.connect(self.dodaj)
         self.listView.clicked.connect(self.info)
         self.pushButton.clicked.connect(self.zmien)
@@ -149,7 +147,7 @@ class Ui_MainWindow(object):
             h = int(img.shape[0] * scale_percent / 100)
             res_img = cv2.resize(img, (w, h), interpolation = cv2.INTER_AREA)
             cv2.imwrite(_img, res_img)
-            self.makeMessage("Resizing complited","Resizing complited.", "Info", 'info', 'button_info')
+        self.makeMessage("Resizing complited","Resizing complited.", "Info", 'info', 'button_info')
             
     def info(self, index):
         indexItem = self.fileModel.index(index.row(), 0, index.parent())
