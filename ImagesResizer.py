@@ -99,13 +99,13 @@ class Ui_MainWindow(object):
         self.treeView.setAnimated(False)
         self.treeView.setIndentation(20)
         self.treeView.setSortingEnabled(True)
-        
+        #
         self.fileModel = QFileSystemModel()
         self.fileModel.setRootPath('')
         self.fileModel.setFilter(QDir.NoDotAndDotDot | QDir.Files)
         self.listView.setModel(self.fileModel)
         self.listView.setRootIndex(self.fileModel.index(os.getenv("HOME")))
-       
+       #
         self.listView.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.treeView.clicked.connect(self.dodaj)
         self.listView.clicked.connect(self.info)
